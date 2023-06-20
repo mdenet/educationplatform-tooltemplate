@@ -67,6 +67,8 @@ cd ./services
 mvn clean install -Pall
 ```
 
+> Note for windows the platformtools tests may fail so add the maven option `-DskipTests` to the build command.
+
 
 ### Build the example
 To build the tool service, at the root directory of the educationplatform-tooltemplate repository  run the following commands.
