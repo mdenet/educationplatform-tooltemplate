@@ -178,11 +178,24 @@ The second step in modifying the example is to customise the static configuratio
 
 ### Static Configuration Files
 
+The static.helloworld directory contains the tool service's static configuration files, resources. Documentation on the format and expected structure of these files can be found [here](https://github.com/mdenet/educationplatform/wiki/Adding-a-Tool#configuration-file-and-resources). Additionally, there is a dockerfile for creating a tool service container.
+
+The static resources include highlighting rules, icons, and a configuration file. The javascript npm package manager is used to manage building of the highlight rules. 
+
+**`dist/`** following building the project using `npm run build` contains all of the built static configuration files and resources for a tool service.
+
+**`public/`** contains the static files and resources that do not need to be bundled.
+
+**`src/`** contains javascript highlighting rules that are bundled.
+
+The `Dockerfile` configures a web server to make the tool service static files from from the `dist/` directory available. It also runs the tool services using `start.sh`. The web server is configured to proxy requests to the tool services  configured by locations in `nginx.conf.template`. The npm project is configured by `package.json` and `package-lock.json` is updated by the npm package manager. Webpack is used to bundle the javascript files and is configure by`webpack.config.js`. 
+
+
 ```
 static.helloworld/
 ├── dist/
 ├──public/
-|   ├── icons/
+|   ├── icons/globe.png
 |   ├── helloworld_tool.json
 |   └── icons.css
 ├──src/
@@ -196,12 +209,54 @@ static.helloworld/
 ```
 
 
+#### Rename the Static Files
+
+Rename all instances of helloworld to use the new tool name for all file contents, filenames, and directories. In particular, don't forget to update the names in `start.sh` and `Dockerfile` otherwise the tool service will fail to start.
+
+
+#### Modify the Static files
+- Replace icons
+    - Replace the `globe.png` in `public/icons/` with icon images of the new tool.
+    - Update `public/icons.css` to have entries for each icon added to the icons directory.
+- For each language that doesn't already have an existing [ace mode](https://ace.c9.io/#nav=higlighter), copy `src/helloworld.js` and modify the [highlighting rules](https://github.com/mdenet/educationplatform/wiki/Adding-a-Tool#highlighting-rules) of each.
+    - Replace the keywords.
+    - Add highlighting rules
+    - update `highlighting.js` to import the file.
+- Modify the `helloworld_tool.json` [configuration file](https://github.com/mdenet/educationplatform/wiki/Adding-a-Tool#configuration-file) for the new tool service.
+    - Define the available tool functions.
+    - Define the available panels and their layout.
+
+
+#### Update Container Configuration
+
+If using the included Docker container:
+- Define tool service urls for each tool services in the  `nginx.conf.template` file.
+- Add entries for each tool service in the `start.sh` file so that the tool services are started by the container.
+
+
+
+
 The final step in modifying the example is to customise the activity.
 
 ### Activity 
+
+The activity contains any project files plus an activity configuration file. The  project files an activity has is dependant on the tool used in the activity and what a teacher would like to demonstrate. The helloworld example displays the `input.txt` in a panel that is used as the input to the helloworld tool service. 
+
 
 ```
 helloworld-example/helloworld/
 ├── helloworld_activity.json
 └── input.txt
 ```
+
+The activity file configuration format documentation can be found [here](https://github.com/mdenet/educationplatform/wiki/Creating-an-Activity#activity-configuration)
+
+#### Modify activity configuration
+- Update the `tools` entry to include the new tool.
+- Add panels to the `panels` object for: 
+   - each new tool panel
+   - displaying any other required input or outputs
+- Update the `layout` object with the panel references so the panels are displayed in the desired positions.
+- Update the `actions` object to map panels to use as inputs to tool services on an action button press.
+
+> Note if a new tool has more than one new panel, multiple activities can be defined in a configuration file.
