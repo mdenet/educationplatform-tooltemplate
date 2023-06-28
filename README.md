@@ -172,8 +172,6 @@ Modify the tool package helloworldfunction:
 - For `HelloWorldToolTests`
   - Implement tests that check the output of tool function is as expected.
 
-RunHelloWorldFunction
-
 The second step in modifying the example is to customise the static configuration files and resources.
 
 ### Static Configuration Files
