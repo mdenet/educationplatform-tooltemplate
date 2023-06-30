@@ -46,9 +46,9 @@ Prerequisites:
 - [Maven](https://maven.apache.org/)
 
 ### Build core dependencies
-The MDENet core tool service dependencies need to available in the local Maven m2 repository. 
+The MDENet core tool service dependencies *must* be available in the local Maven m2 repository. The following steps build and install these dependencies to the local m2 repository.
 
-Use either command to clone the platformtools repository.
+Use either command to clone the [platformtools](https://github.com/mdenet/platformtools) repository.
 
 **Via https -**
 ```
@@ -70,6 +70,8 @@ mvn clean install -Pall
 > Note for windows the platformtools tests may fail so add the maven option `-DskipTests` to the build command.
 
 
+
+
 ### Build the example
 To build the tool service, at the root directory of the educationplatform-tooltemplate repository  run the following commands.
 
@@ -83,7 +85,9 @@ mvn clean install -Phelloworld
 
 Before modifying the example, [use this template](https://github.com/mdenet/educationplatform-tooltemplate/generate) to create a repository for the new tool service that is populated with the helloworld example files. Ensure that the example builds successfully.
 
-There are two components to an education platform tool, its services and its static configuration files and resources. Additionally, for a tool to be displayed in in the platform there needs to be an activity that uses it. This section describes how the helloworld example is structured and how it can be modified to create a new tool.
+There are two components to an education platform tool, its services and its static configuration files and resources. Additionally, for a tool to be displayed in the platform there needs to be an activity that uses it. This section describes how the helloworld example is structured and how it can be modified to create a new tool. 
+
+> Note - When using Eclipse for development ensure it is set up as detailed in [this section](#eclipse-ide-setup).
 
 The helloworld has the following directory structure. 
 
@@ -149,9 +153,11 @@ services/
 
 The **`helloworld`** package is a maven [tycho](https://tycho.eclipseprojects.io/doc/latest/index.html) eclipse plugin project and has the standard directory structure which includes a MANIFEST file.
 
+> Note - When using the Eclipse IDE for devlopment ensure that the target file is active and being used by Eclipse as shown [here](#using-a-target-file).
+
 The **`helloworldfunction`** is a standard maven java project.
 
-> Note if the new tool does not have any dependency on eclipse features then the helloworld package can be replaced with a standard maven java project. 
+> Note - If the new tool does not have any dependency on eclipse features then the helloworld package can be replaced with a standard maven java project. 
 
 #### Rename the tool
 Rename all instances of helloworld to use the new tool name for all file contents, filenames, and directories.
@@ -164,7 +170,7 @@ Modify the tool package helloworld:
 - For HelloWorld.class
     - initialise the new tool as required by its api.
     - parse and load the input parameters that are strings of file contents. 
-    - invoke the tool to process the the input parameters to obtain an output(s).
+    - invoke the tool to process the input parameters to obtain an output(s).
 
 Modify the tool package helloworldfunction:
 - For `RunHelloWorldFunction.java`
@@ -173,6 +179,7 @@ Modify the tool package helloworldfunction:
   - Implement tests that check the output of tool function is as expected.
 
 The second step in modifying the example is to customise the static configuration files and resources.
+
 
 ### Static Configuration Files
 
@@ -258,3 +265,49 @@ The activity file configuration format documentation can be found [here](https:/
 - Update the `actions` object to map panels to use as inputs to tool services on an action button press.
 
 > Note if a new tool has more than one new panel, multiple activities can be defined in a configuration file.
+
+
+## Eclipse IDE Setup
+
+This section contains notes for setting up the Eclipse IDE for developing tool services.
+
+### Prerequisite Plug-ins
+
+The following plugins are required for developing a tool service using Eclipse. 
+
+ | Name | Version Tested | ID |
+ |  ---    |   ---             | ---   |
+  Eclipse Modeling Tools  |	4.26.0 | epp.package.modeling	|
+  Eclipse Plug-in Development | 3.14 | org.eclipse.pde.feature.group | 
+  EMF - Eclipse Modeling Framework SDK |	2.32.0 |	org.eclipse.emf.sdk.feature.group |
+  M2E - Maven Integration for Eclipse |	2.1.2 |	org.eclipse.m2e.feature.feature.group |
+  M2E - PDE Integration |	2.1.2 |	org.eclipse.m2e.pde.feature.feature.group | 	
+ 
+ Depending on the languages that your tool makes use of additional plugins may be requried to support them, for example, Emfatic. The folloing table shows plugins supporting other languages that have been used previously.
+
+ | Name | Version Tested | ID |
+ |  ---    |   ---             | ---   |
+  Emfatic |	1.1.0|	org.eclipse.emf.emfatic.feature.group |  
+  Epsilon EMF Integration |	2.4.0 |	org.eclipse.epsilon.emf.feature.feature.group |
+  Flexmi |	2.4.0 |	org.eclipse.epsilon.flexmi.feature.feature.group |
+  OCL Classic SDK: Ecore/UML Parsers,Evaluator,Edit |	5.18.0 |	org.eclipse.ocl.all.sdk.feature.group	Eclipse OCL
+
+
+
+### Using a Target File
+If you are developing a tool that is Eclipse based and makes used of the `com.mde-network.ep.toolfunctions.helloworld` package that includes a target file, it is important to configure eclipse to use the target file of the of tool being developed. This ensures that the dependencies specified by the target file are used. 
+
+1. From the Eclipse main window with the project open, select from the menu  Window > Preferences. 
+
+2. In preferences panel dialog box that appears under Plug-in Development > Target Platform in the left hand panel, make sure the mdenettool-helloworld target file is active (shown in the screenshot).
+
+> Note - Or select the relevant target for the project you are developing if you have renamed it.
+
+![Preferences dialog showing helloworld target configuration.](/.images/preferences_target.png)
+
+
+3. Click Apply and close.
+
+> Note - You may have to restart eclipse for the changes to be applied.
+
+
